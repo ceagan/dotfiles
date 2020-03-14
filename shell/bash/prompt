@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# Set a fancy color prompt with a date/time at the beginning
+export PS1='\[\033[01;31m\][\D{%Y-%m-%d} \t]\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\$ '
+

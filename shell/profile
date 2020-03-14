@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Get Script Location
+SCRIPT_HOME="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+# If running BASH
+if [ -n "$BASH_VERSION" ]; then
+    . "$SCRIPT_HOME/bash/prompt"
+fi
