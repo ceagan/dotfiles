@@ -1,15 +1,36 @@
 #!/bin/bash
 
+git_email() {
+    GIT_BRANCH=$(git_branch)
+    if [[ -n ${GIT_BRANCH} ]]; then
+        GIT_EMAIL=$(git config user.email)
+        echo -e " ${GIT_EMAIL}"
+    fi
+}
+
 git_branch() {
     # trunk-ignore(shellcheck/SC2312)
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
+path() {
+    WORKDIR=$(pwd)
+    GIT_BRANCH=$(git_branch)
+    if [[ -n ${GIT_BRANCH} ]]; then
+        GIT_PATH=$(git rev-parse --show-prefix)
+        GIT_ROOT=${WORKDIR%%/"${GIT_PATH%/}"}
+        GIT_DIRNAME=${GIT_ROOT##*/}
+        echo -e "${GIT_BRANCH}:\033[01;34m${GIT_DIRNAME}/${GIT_PATH}\033[00m"
+    else
+        echo -e "\033[01;34m${WORKDIR}\033[00m"
+    fi
+}
+
 aws_profile() {
     if [[ -n ${AWS_PROFILE} ]]; then
-        echo " (${AWS_PROFILE})"
+        echo "AWS_PROFILE:${AWS_PROFILE} "
     fi
 }
 
 # Set a fancy color prompt with a date/time at the beginning
-export PS1='\[\033[01;31m\][\D{%Y-%m-%d} \t]\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\] $(git_branch)$(aws_profile)\n\$ '
+export PS1='\[\033[01;31m\][\D{%Y-%m-%d} \t]\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:$(path)$(git_email)\n$(aws_profile)\$ '

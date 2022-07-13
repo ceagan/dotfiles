@@ -7,3 +7,8 @@ insert_final_newline = true
 [*.sh]
 indent_style = space
 indent_size = 4
+
+# 4 space indentation on prompt
+[prompt]
+indent_style = space
+indent_size = 4
