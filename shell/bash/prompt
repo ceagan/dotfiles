@@ -13,6 +13,12 @@ git_branch() {
     git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
 }
 
+dist_info() {
+    DIST_DESCRIPTION=$(lsb_release --description --short)
+    DIST_CODENAME=$(lsb_release --codename --short)
+    echo -e "${DIST_DESCRIPTION} (${DIST_CODENAME})"
+}
+
 path() {
     WORKDIR=$(pwd)
     GIT_BRANCH=$(git_branch)
@@ -20,9 +26,11 @@ path() {
         GIT_PATH=$(git rev-parse --show-prefix)
         GIT_ROOT=${WORKDIR%%/"${GIT_PATH%/}"}
         GIT_DIRNAME=${GIT_ROOT##*/}
-        echo -e "${GIT_BRANCH}:\033[01;34m${GIT_DIRNAME}/${GIT_PATH}\033[00m"
+        TITLE="\e]2;${GIT_DIRNAME} ${GIT_BRANCH}\a"
+        echo -e "${TITLE}${GIT_BRANCH}:\033[01;34m${GIT_DIRNAME}/${GIT_PATH}\033[00m"
     else
-        echo -e "\033[01;34m${WORKDIR}\033[00m"
+        TITLE="\e]2;$(dist_info)\a"
+        echo -e "${TITLE}\033[01;34m${WORKDIR}\033[00m"
     fi
 }
 
